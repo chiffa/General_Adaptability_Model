@@ -20,7 +20,7 @@ values = 'lastvals_v.csv'
 # source_folder = 'JinDataGBO'
 # values = 'meanNormalizedFinalAverageSpotIntensity.csv'
 
-errors = 'speeds_err.csv'
+# errors = 'speeds_err.csv'
 outfile = 'JinData_out_haploid-gen.csv'
 transpose = True
 
