@@ -13,4 +13,6 @@ and installable with
 > pip install git+https://github.com/chiffa/chiffatools2.git
 ```
 
-commit hash 6085ab8 was used to generate the relevant figures.
+commit hash `6085ab8` was used to generate the relevant figures.
+
+Files will need to be moved to the master workspace to be properly importable by the scripts with external IO.
