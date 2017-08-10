@@ -14,13 +14,13 @@ from scipy.stats import expon
 # values = 'speeds_v.csv'
 # errors = 'speeds_err.csv'
 
-source_folder = '../original_data/Aneuploid S Cerevisiae/JinData'
+source_folder = 'JinData'
 values = 'lastvals_v.csv'
 
 # source_folder = 'JinDataGBO'
 # values = 'meanNormalizedFinalAverageSpotIntensity.csv'
 
-# errors = 'speeds_err.csv'
+errors = 'speeds_err.csv'
 outfile = 'JinData_out_haploid-gen.csv'
 transpose = True
 
@@ -61,14 +61,14 @@ synthetic = vals
 
 def clear_empty_rows_and_cols(_synthetic, c_headers, r_headers):
     _synthetic = _synthetic / np.max(np.ma.masked_invalid(_synthetic))
-    exclusion = ['low glucose', 'glycerol']
+    # exclusion = ['low glucose', 'glycerol']
 
     gini_indexes = np.apply_along_axis(gini_coeff, 0, _synthetic)
     keep_cols = gini_indexes < 0.7
 
-    for i, name in enumerate(c_headers):
-        if name in exclusion:
-            keep_cols[i] = False
+    # for i, name in enumerate(c_headers):
+    #     if name in exclusion:
+    #         keep_cols[i] = False
 
     _synthetic = _synthetic[:, keep_cols]
     c_headers = np.array(c_headers)[keep_cols]
@@ -145,14 +145,17 @@ def plot_raw_values():
     cmap = matplotlib.cm.get_cmap('Dark2')
     l = synthetic.shape[0]
 
+    # argsort = np.argsort(synthetic[-2])[-1:0:-1]
+    argsort = np.argsort(np.nanmean(synthetic, axis=0))[::-1]
     for i, (row, r_name) in enumerate(zip(np.vsplit(synthetic, synthetic.shape[0]), r_headers)):
         if r_name in ['U1', 'controlHaploid']:
-            plt.plot(row[0, :], 'k', label=r_name,)
+            plt.plot(row[0, argsort], 'k')
+            plt.plot(row[0, argsort], 'ko', label=r_name)
         else:
-            plt.plot(row[0, :], 'o', label=r_name, color=cmap(float(i)/l))
+            plt.plot(row[0, argsort], 'o', label=r_name, color=cmap(float(i)/l))
 
-    plt.xticks(np.arange(len(c_headers)), c_headers, rotation="vertical")
-    plt.legend()
+    plt.xticks(np.arange(len(c_headers)), c_headers[argsort], rotation="vertical")
+    plt.legend(ncol=2)
     plt.show()
 
     gini_indexes = np.apply_along_axis(gini_coeff, 1, synthetic)
@@ -298,10 +301,10 @@ plt.title('mean-log correlation')
 plt.plot(mean, std, 'k.')
 plt.xlabel('n_log2 - Mean')
 plt.ylabel('n_log2 - Standard deviation')
-plt.set_autoscalex_on(False)
-plt.set_autoscaley_on(False)
-plt.set_ylim([0, 1])
-plt.set_xlim([0, 1])
+# plt.set_autoscalex_on(False)
+# plt.set_autoscaley_on(False)
+# plt.set_ylim([0, 1])
+# plt.set_xlim([0, 1])
 plt.show()
 
 with open(outfile, 'wb') as destination:
